@@ -1,6 +1,7 @@
 const app = require('express')();
 const jwt = require('jsonwebtoken');
 const user = require('../models/user');
+const authorized = require('../middlewares/authorized');
 
 app.get('/sign-up', (req, res) => {
   res.json({
@@ -50,5 +51,12 @@ app.post('/login', (req, res) => {
     });
   });
 });
+
+// protected route
+app.get('/protected', authorized, (req, res) => {
+  res.json({
+    "message": "hello"
+  });
+})
 
 module.exports = app;
