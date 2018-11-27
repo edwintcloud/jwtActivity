@@ -28,16 +28,19 @@ UserSchema.pre('save', async function() {
 
 UserSchema.statics.authenticate = async function(email, password) {
   // find user by email
-  const user = this.find({ email: email }).limit(1).lean();
-  if(user.lenth == 0) {
-    return Promise.reject(`User not found`);
+  const user = await this.find({ email: email }).limit(1).lean();
+  if(user.length == 0) {
+    return Promise.reject(new Error(`User not found`));
   }
   
   // compare passwords
   const match = await bcrypt.compare(password, user[0].password);
   if(!match) {
-    return Promise.reject(`Invalid password`);
+    return Promise.reject(new Error(`Invalid password`));
   }
+  
+  // return user
+  return user[0];
 };
 
 module.exports = mongoose.model('User', UserSchema);

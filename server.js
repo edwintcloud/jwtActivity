@@ -1,6 +1,14 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const authController = require('./controllers/auth');
+const mongoose = require('mongoose');
+
+// connect to mongodb
+mongoose.connect(`mongodb://localhost/${process.env.npm_package_name}`, { useNewUrlParser: true });
+mongoose.connection.on('error', (error) => {
+  console.log('\x1b[31m%s\x1b[0m', error.message.substr(error.message.lastIndexOf('['), error.message.length));
+});
 
 // configure express to use json
 app.use(express.json());
